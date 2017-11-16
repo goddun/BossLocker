@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="Windows-1252"?>
-<VisualStudioProject ProjectType="Visual C++" Version="9.00" Name="Tutorial05" ProjectGUID="{EA744FDE-6588-4AA7-94BA-318D00E409DC}" RootNamespace="Tutorial05" Keyword="Win32Proj" TargetFrameworkVersion="131072">
+<VisualStudioProject ProjectType="Visual C++" Version="9.00" Name="Tutorial06" ProjectGUID="{291B6A55-368E-4420-A0EB-FBE077B9F137}" RootNamespace="Tutorial06" Keyword="Win32Proj" TargetFrameworkVersion="131072">
 <Platforms>
 <Platform Name="Win32" />
 <Platform Name="x64" />
@@ -124,14 +124,14 @@
 <References />
 <Files>
 <Filter Name="DXUT" />
-      <File RelativePath="Tutorial05.cpp" />
+      <File RelativePath="Tutorial06.cpp" />
   <Filter Name="Shaders" Filter="fx;fxh;hlsl">
-      <File RelativePath="Tutorial05.fx" />
+      <File RelativePath="Tutorial06.fx" />
   </Filter>
 <Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 <File RelativePath="DXUT\Core\dpiaware.manifest" />
       <File RelativePath="resource.h" />
-      <File RelativePath="Tutorial05.rc" />
+      <File RelativePath="Tutorial06.rc" />
   </Filter>
 </Files>
 <Globals />

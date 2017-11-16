@@ -68,7 +68,7 @@ CAPTION "About"
 FONT 8, "System"
 BEGIN
     ICON            IDI_TUTORIAL1,IDC_MYICON,14,9,16,16
-    LTEXT           "Tutorial05 Version 1.0",IDC_STATIC,49,10,119,8,SS_NOPREFIX
+    LTEXT           "Tutorial06 Version 1.0",IDC_STATIC,49,10,119,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2005",IDC_STATIC,49,20,119,8
     DEFPUSHBUTTON   "OK",IDOK,195,6,30,11,WS_GROUP
 END
@@ -107,8 +107,8 @@ END
 
 STRINGTABLE  
 BEGIN
-   IDC_TUTORIAL1   "Tutorial05"
-   IDS_APP_TITLE       "Tutorial05"
+   IDC_TUTORIAL1   "Tutorial06"
+   IDS_APP_TITLE       "Tutorial06"
 END
 
 #endif

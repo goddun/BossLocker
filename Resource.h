@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Tutorial05.rc
+// Used by Tutorial06.rc
 //
 
 #define IDS_APP_TITLE           103
