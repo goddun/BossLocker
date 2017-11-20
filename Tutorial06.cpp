@@ -545,7 +545,7 @@ void Render()
     // Setup our lighting parameters
     XMFLOAT4 vLightDirs[2] =
     {
-        XMFLOAT4( -0.577f, 0.577f, -0.577f, 1.0f ),
+        XMFLOAT4( -0.578f, 0.577f, -0.577f, 1.0f ),
         XMFLOAT4( 0.0f, 0.0f, -1.0f, 1.0f ),
     };
     XMFLOAT4 vLightColors[2] =
