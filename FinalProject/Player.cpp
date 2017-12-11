@@ -5,7 +5,7 @@
 Player::Player()
 {
 	color = { 1,0,0 };
-	position = { 0,400,0 };
+	position = { 0,600,0 };
 	rotation = { 0,0,0 };
 	scale = { 1,1,1 };
 	size = 30.0f;

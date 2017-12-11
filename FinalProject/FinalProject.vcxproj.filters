@@ -30,7 +30,10 @@
     <ClInclude Include="Bullet.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Shape.h">
+    <ClInclude Include="Stage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,7 +50,10 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Shape.cpp">
+    <ClCompile Include="Stage.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
