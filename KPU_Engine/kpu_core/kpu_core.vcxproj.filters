@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\kpu">
+      <UniqueIdentifier>{934b97bc-5b5b-4cd3-8329-3c7543ed6211}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\app">
+      <UniqueIdentifier>{02a0b6e7-95b2-45cc-a2b9-77c1a90318eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\math">
+      <UniqueIdentifier>{0cd5b848-200c-4f00-bc3d-217356024b2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\audio">
+      <UniqueIdentifier>{80d897e6-e4cb-4ba2-87a1-6827d6d32c5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\debug">
+      <UniqueIdentifier>{3e9a1f8b-cd3c-494e-91f5-5ac7158a07a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\embedded">
+      <UniqueIdentifier>{1bf68668-8c31-4d30-8bc5-d503075bdb38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\entity">
+      <UniqueIdentifier>{4b04631b-0412-4388-9d9e-bc2dbd6b8325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\event">
+      <UniqueIdentifier>{43aada80-96fb-4da4-b985-1f0918ab8950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\graphic">
+      <UniqueIdentifier>{44f2bb1a-f5b8-4b14-84a8-cd4f73a33b10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\platform">
+      <UniqueIdentifier>{34b9cc88-ff6f-4066-b28b-a73a4c03ad5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\system">
+      <UniqueIdentifier>{6948ad31-39b2-4b50-8fdd-8fc30638cacb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\util">
+      <UniqueIdentifier>{f1faa222-1cf6-4a44-bd10-1d3915b41f32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\event\component">
+      <UniqueIdentifier>{9745ee7d-c761-49f5-b8de-66d8a6485c42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\graphic\ui">
+      <UniqueIdentifier>{b74dfcdd-b88a-4ced-8b1b-7ee00d1d2b2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\graphic\shaderFactory">
+      <UniqueIdentifier>{c14d3a6b-6947-4f27-9096-29ebb714c509}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\platform\win32">
+      <UniqueIdentifier>{37868c6c-1463-4176-9fc5-42f4121ff6f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\kpu\platform\directx">
+      <UniqueIdentifier>{4e926f1c-01c0-4fea-9b84-07e00b78e259}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\kpu\Common.h">
+      <Filter>소스 파일\kpu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\kpu.h">
+      <Filter>소스 파일\kpu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\String.h">
+      <Filter>소스 파일\kpu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\AABB.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\mat4.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\maths.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\maths_func.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\Quaternion.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\Rectangle.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\tvec2.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\vec2.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\vec3.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu\maths\vec4.h">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpuCore.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\kpu\kpu.cpp">
+      <Filter>소스 파일\kpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kpu\String.cpp">
+      <Filter>소스 파일\kpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kpu\maths\AABB.cpp">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kpu\maths\mat4.cpp">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kpu\maths\Quaternion.cpp">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kpu\maths\Rectangle.cpp">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kpu\maths\vec2.cpp">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kpu\maths\vec3.cpp">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kpu\maths\vec4.cpp">
+      <Filter>소스 파일\kpu\math</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
