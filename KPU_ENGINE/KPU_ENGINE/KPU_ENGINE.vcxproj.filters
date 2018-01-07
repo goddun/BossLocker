@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="app">
+      <UniqueIdentifier>{175d0080-e1b5-422e-aaa8-f9dadd9b249f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic">
+      <UniqueIdentifier>{33c36f8e-f79c-4f24-ad90-24aa2d31f220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{c0bf61dd-d924-4fe3-95ca-07d454c761fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{7e746823-f26a-4c0b-907a-fa37609059da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{d112501c-f901-44cd-9f7c-a37d0662420d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\texture">
+      <UniqueIdentifier>{49cb290f-a278-47e7-8a53-a725477b913f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\color">
+      <UniqueIdentifier>{68556d46-2bdf-49ec-8c21-12f243124b17}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\scene\scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\cameraclass.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\d3dclass.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\systemclass.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\inputclass.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\textureshaderclass.cpp">
+      <Filter>Graphic\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\Texture.cpp">
+      <Filter>Graphic\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\TextureModel.cpp">
+      <Filter>Graphic\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\colorshaderclass.cpp">
+      <Filter>Graphic\color</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\modelclass.cpp">
+      <Filter>Graphic\color</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\scene\scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\cameraclass.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\d3dclass.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\systemclass.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\inputclass.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\Vertex.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu.h" />
+    <ClInclude Include="DirectX.h" />
+    <ClInclude Include="src\graphic\textureshaderclass.h">
+      <Filter>Graphic\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\Texture.h">
+      <Filter>Graphic\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\TextureModel.h">
+      <Filter>Graphic\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\colorshaderclass.h">
+      <Filter>Graphic\color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\modelclass.h">
+      <Filter>Graphic\color</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\graphic\shader\color.vs">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\color.ps">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\texture.ps">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\texture.vs">
+      <Filter>Shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>
