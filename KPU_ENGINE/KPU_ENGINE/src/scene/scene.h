@@ -12,11 +12,11 @@
 ///////////////////////
 #include "../graphic/d3dclass.h"
 #include "../graphic/cameraclass.h"
-#include "../graphic/modelclass.h"
-#include "../graphic/colorshaderclass.h"
-#include"../graphic/Texture.h"
 #include"../graphic/TextureModel.h"
 #include"../graphic/textureshaderclass.h"
+#include"../graphic/colorshaderclass.h"
+#include"../graphic/lightshaderclass.h"
+#include"../graphic/light.h"
 /////////////
 // GLOBALS //
 /////////////
@@ -46,19 +46,11 @@ private:
 private:
 	D3DClass* m_D3D=nullptr;
 	CameraClass* m_Camera = nullptr;
-	//ModelClass* m_Model;
 	TextureModel* m_Model = nullptr;
-	ColorShaderClass* m_ColorShader = nullptr;
 	TextureShaderClass* m_TextureShader = nullptr;
-
-
-
-	std::vector<ModelClass*>v_model;
-	std::vector<Texture*>v_texture;
-	vector<TextureVertex> verticies;
-	//vector<ColorVertex> verticies;
-	vector<unsigned long> indicies;
-
+	ColorShaderClass* m_ColorShader = nullptr;
+	LightShaderClass* m_LightShader = nullptr;
+	Light* m_light = nullptr;
 };
 
 #endif

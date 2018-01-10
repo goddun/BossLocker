@@ -19,8 +19,14 @@
     <Filter Include="Graphic\texture">
       <UniqueIdentifier>{49cb290f-a278-47e7-8a53-a725477b913f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphic\Model">
+      <UniqueIdentifier>{b9c08dd2-6fc1-4e63-81d6-0e80d8c697e0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Graphic\color">
       <UniqueIdentifier>{68556d46-2bdf-49ec-8c21-12f243124b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Light">
+      <UniqueIdentifier>{7a9815cf-b2b2-45ad-abfd-978a5ed3d458}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,14 +52,17 @@
     <ClCompile Include="src\graphic\Texture.cpp">
       <Filter>Graphic\texture</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\TextureModel.cpp">
-      <Filter>Graphic\texture</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphic\colorshaderclass.cpp">
       <Filter>Graphic\color</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\modelclass.cpp">
-      <Filter>Graphic\color</Filter>
+    <ClCompile Include="src\graphic\TextureModel.cpp">
+      <Filter>Graphic\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\lightshaderclass.cpp">
+      <Filter>Graphic\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\light.cpp">
+      <Filter>Graphic\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,21 +85,23 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="src\kpu.h" />
-    <ClInclude Include="DirectX.h" />
     <ClInclude Include="src\graphic\textureshaderclass.h">
       <Filter>Graphic\texture</Filter>
     </ClInclude>
     <ClInclude Include="src\graphic\Texture.h">
       <Filter>Graphic\texture</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\TextureModel.h">
-      <Filter>Graphic\texture</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphic\colorshaderclass.h">
       <Filter>Graphic\color</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\modelclass.h">
-      <Filter>Graphic\color</Filter>
+    <ClInclude Include="src\graphic\TextureModel.h">
+      <Filter>Graphic\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\lightshaderclass.h">
+      <Filter>Graphic\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\light.h">
+      <Filter>Graphic\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +115,12 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="src\graphic\shader\texture.vs">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\light.ps">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\light.vs">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

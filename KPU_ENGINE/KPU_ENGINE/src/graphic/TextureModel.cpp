@@ -2,12 +2,9 @@
 
 
 
-TextureModel::TextureModel(std::vector<TextureVertex>* verticies, std::vector<unsigned long>* indicies)
+TextureModel::TextureModel()
 {
-	m_vertexBuffer = 0;
-	m_indexBuffer = 0;
-	this->verticies = verticies;
-	this->indicies = indicies;
+	
 }
 
 TextureModel::TextureModel(const TextureModel &other)
@@ -19,10 +16,15 @@ TextureModel::~TextureModel()
 {
 }
 
-bool TextureModel::Initialize(ID3D11Device *device)
+bool TextureModel::Initialize(ID3D11Device *device, WCHAR* path, const int type)
 {
 	bool result;
-
+	if (type == FBX)
+	{
+		result = LoadFBX(path);
+		if (!result)
+			return false;
+	}
 
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
@@ -31,6 +33,29 @@ bool TextureModel::Initialize(ID3D11Device *device)
 		return false;
 	}
 
+	return true;
+}
+
+bool TextureModel::LoadFBX(WCHAR* path)
+{
+	verticies.push_back({ D3DXVECTOR3(-1.0f, -1.0f, 0.0f) ,D3DXVECTOR2(0.0f, 1.0f),D3DXVECTOR3(0.0f, 0.0f, -1.0f) });
+	verticies.push_back({ D3DXVECTOR3(0.0f, 1.0f, 0.0f) ,D3DXVECTOR2(0.5f, 0.0f),D3DXVECTOR3(0.0f, 0.0f, -1.0f) });
+	verticies.push_back({ D3DXVECTOR3(1.0f, -1.0f, 0.0f) ,D3DXVECTOR2(1.0f, 1.0f) ,D3DXVECTOR3(0.0f, 0.0f, -1.0f) });
+
+	indicies.push_back(0);
+	indicies.push_back(1);
+	indicies.push_back(2);
+	return true;
+}
+
+bool TextureModel::LoadTexture(ID3D11Device *device , WCHAR* path, const int type)
+{
+	if (type == DDS)
+	{
+		auto result = m_texture.Load_DDS(device, path);
+		if (!result)
+			return false;
+	}
 	return true;
 }
 
@@ -50,7 +75,7 @@ void TextureModel::Render(ID3D11DeviceContext *deviceContext)
 
 int TextureModel::GetIndexCount()
 {
-	return indicies->size();
+	return indicies.size();
 }
 
 bool TextureModel::InitializeBuffers(ID3D11Device *device)
@@ -65,14 +90,14 @@ bool TextureModel::InitializeBuffers(ID3D11Device *device)
 
 	// Set up the description of the static vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(TextureVertex) * verticies->size();
+	vertexBufferDesc.ByteWidth = sizeof(TextureVertex) * verticies.size();
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
 	vertexBufferDesc.StructureByteStride = 0;
 
 	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = &((*verticies)[0]);
+	vertexData.pSysMem = &(verticies[0]);
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
 
@@ -85,14 +110,14 @@ bool TextureModel::InitializeBuffers(ID3D11Device *device)
 
 	// Set up the description of the static index buffer.
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(unsigned long) * indicies->size();
+	indexBufferDesc.ByteWidth = sizeof(unsigned long) * indicies.size();
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBufferDesc.CPUAccessFlags = 0;
 	indexBufferDesc.MiscFlags = 0;
 	indexBufferDesc.StructureByteStride = 0;
 
 	// Give the subresource structure a pointer to the index data.
-	indexData.pSysMem = &((*indicies)[0]);
+	indexData.pSysMem = &(indicies[0]);
 	indexData.SysMemPitch = 0;
 	indexData.SysMemSlicePitch = 0;
 

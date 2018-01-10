@@ -8,7 +8,7 @@ public:
 	Texture();
 	Texture(const Texture&);
 	~Texture();
-	bool Init(ID3D11Device*, WCHAR*);
+	bool Load_DDS(ID3D11Device*, WCHAR*);
 	void Shutdown();
 	ID3D11ShaderResourceView* GetTexture() { return m_texture; }
 private:

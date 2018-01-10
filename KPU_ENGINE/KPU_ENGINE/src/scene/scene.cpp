@@ -50,62 +50,42 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	{
 		return false;
 	}
-
 	// Set the initial position of the camera.
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 
 
-	// Create the texture object.
-	auto texture = new Texture; 
-	if(!texture)
-	{ 
-		return false;
-	} // Initialize the texture object. 
-	WCHAR* filename = L"data/seafloor.dds";
-	result = texture->Init(m_D3D->GetDevice(), filename); 
-	if(!result) 
-	{
-		return false;
-	}
-	v_texture.push_back(texture);
 
 
-	verticies.push_back({ D3DXVECTOR3(-1.0f, -1.0f, 0.0f) ,D3DXVECTOR2(0.0f, 1.0f) });
-	verticies.push_back({ D3DXVECTOR3(0.0f, 1.0f, 0.0f) ,D3DXVECTOR2(0.5f, 0.0f) });
-	verticies.push_back({ D3DXVECTOR3(1.0f, -1.0f, 0.0f) ,D3DXVECTOR2(1.0f, 1.0f) });
 
-	indicies.push_back(0);
-	indicies.push_back(1);
-	indicies.push_back(2);
+
 	// Create the model object.
-	m_Model = new TextureModel(&verticies,&indicies);
-	if(!m_Model)
-	{
-		return false;
-	}
-
+	m_Model = new TextureModel();
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice());
-	if(!result)
+	if(!m_Model->Initialize(m_D3D->GetDevice(), L"data/seafloor.dds",FBX))
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
+	m_Model->LoadTexture(m_D3D->GetDevice(), L"data/seafloor.dds",DDS);
 
 	// Create the color shader object.
-	m_TextureShader = new TextureShaderClass;
-	if(!m_TextureShader)
+	m_LightShader = new LightShaderClass;
+	if(!m_LightShader)
 	{
 		return false;
 	}
 
 	// Initialize the color shader object.
-	result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
+	result = m_LightShader->Initialize(m_D3D->GetDevice(), hwnd);
 	if(!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
 		return false;
 	}
+	m_light = new Light();
+	m_light->SetDiffuseColor(1.0f, 0.0f, 1.0f, 1.0f);
+	m_light->SetDirection(0.0f, 0.0f, 1.0f);
+
 
 	return true;
 }
@@ -118,22 +98,27 @@ void Scene::Shutdown()
 	{
 		m_ColorShader->Shutdown();
 		delete m_ColorShader;
-		m_ColorShader = 0;
+		m_ColorShader = nullptr;
 	}
-
+	if (m_TextureShader)
+	{
+		m_TextureShader->Shutdown();
+		delete m_TextureShader;
+		m_TextureShader = nullptr;
+	}
 	// Release the model object.
 	if(m_Model)
 	{
 		m_Model->Shutdown();
 		delete m_Model;
-		m_Model = 0;
+		m_Model = nullptr;
 	}
 
 	// Release the camera object.
 	if(m_Camera)
 	{
 		delete m_Camera;
-		m_Camera = 0;
+		m_Camera = nullptr;
 	}
 
 	// Release the D3D object.
@@ -141,9 +126,13 @@ void Scene::Shutdown()
 	{
 		m_D3D->Shutdown();
 		delete m_D3D;
-		m_D3D = 0;
+		m_D3D = nullptr;
 	}
-
+	if (m_light)
+	{
+		delete m_light;
+		m_light = nullptr;
+	}
 	return;
 }
 
@@ -185,7 +174,7 @@ bool Scene::Render()
 	m_Model->Render(m_D3D->GetDeviceContext());
 
 	// Render the model using the color shader.
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,v_texture[0]->GetTexture());
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture(),m_light->GetDirection() ,m_light->GetDiffuseColor());
 	if(!result)
 	{
 		return false;

@@ -24,21 +24,24 @@
     <ClCompile Include="src\graphic\cameraclass.cpp" />
     <ClCompile Include="src\graphic\colorshaderclass.cpp" />
     <ClCompile Include="src\graphic\d3dclass.cpp" />
-    <ClCompile Include="src\graphic\modelclass.cpp" />
-    <ClCompile Include="src\graphic\Texture.cpp" />
+    <ClCompile Include="src\graphic\light.cpp" />
+    <ClCompile Include="src\graphic\lightshaderclass.cpp" />
+    <ClCompile Include="src\graphic\Texture.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level1</WarningLevel>
+    </ClCompile>
     <ClCompile Include="src\graphic\TextureModel.cpp" />
     <ClCompile Include="src\graphic\textureshaderclass.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectX.h" />
     <ClInclude Include="src\app\inputclass.h" />
     <ClInclude Include="src\app\systemclass.h" />
     <ClInclude Include="src\graphic\cameraclass.h" />
     <ClInclude Include="src\graphic\colorshaderclass.h" />
     <ClInclude Include="src\graphic\d3dclass.h" />
-    <ClInclude Include="src\graphic\modelclass.h" />
+    <ClInclude Include="src\graphic\light.h" />
+    <ClInclude Include="src\graphic\lightshaderclass.h" />
     <ClInclude Include="src\graphic\Texture.h" />
     <ClInclude Include="src\graphic\TextureModel.h" />
     <ClInclude Include="src\graphic\textureshaderclass.h" />
@@ -49,6 +52,8 @@
   <ItemGroup>
     <None Include="src\graphic\shader\color.ps" />
     <None Include="src\graphic\shader\color.vs" />
+    <None Include="src\graphic\shader\light.ps" />
+    <None Include="src\graphic\shader\light.vs" />
     <None Include="src\graphic\shader\texture.ps" />
     <None Include="src\graphic\shader\texture.vs" />
   </ItemGroup>
@@ -136,7 +141,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(solutiondir)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
