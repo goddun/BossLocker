@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="app">
+      <UniqueIdentifier>{175d0080-e1b5-422e-aaa8-f9dadd9b249f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic">
+      <UniqueIdentifier>{33c36f8e-f79c-4f24-ad90-24aa2d31f220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{c0bf61dd-d924-4fe3-95ca-07d454c761fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{7e746823-f26a-4c0b-907a-fa37609059da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{d112501c-f901-44cd-9f7c-a37d0662420d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\texture">
+      <UniqueIdentifier>{49cb290f-a278-47e7-8a53-a725477b913f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Model">
+      <UniqueIdentifier>{b9c08dd2-6fc1-4e63-81d6-0e80d8c697e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\color">
+      <UniqueIdentifier>{68556d46-2bdf-49ec-8c21-12f243124b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Light">
+      <UniqueIdentifier>{7a9815cf-b2b2-45ad-abfd-978a5ed3d458}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{1b4a1312-0213-41b7-8bdd-b24295520f19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Asset">
+      <UniqueIdentifier>{bfe37be0-84d5-4496-89ea-453c0de068bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic\Text">
+      <UniqueIdentifier>{28dd72ae-37b7-4f4c-99bc-24c90be1e339}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\scene\scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\cameraclass.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\d3dclass.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\systemclass.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\inputclass.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\textureshaderclass.cpp">
+      <Filter>Graphic\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\Texture.cpp">
+      <Filter>Graphic\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\colorshaderclass.cpp">
+      <Filter>Graphic\color</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\TextureModel.cpp">
+      <Filter>Graphic\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\lightshaderclass.cpp">
+      <Filter>Graphic\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\light.cpp">
+      <Filter>Graphic\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kpu.cpp" />
+    <ClCompile Include="src\graphic\ColorModel.cpp">
+      <Filter>Graphic\color</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\textclass.cpp">
+      <Filter>Graphic\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\fontshaderclass.cpp">
+      <Filter>Graphic\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\fontclass.cpp">
+      <Filter>Graphic\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\cpuclass.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\timerclass.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\fpsclass.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\scene\scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\cameraclass.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\d3dclass.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\systemclass.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\inputclass.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\Vertex.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kpu.h" />
+    <ClInclude Include="src\graphic\textureshaderclass.h">
+      <Filter>Graphic\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\Texture.h">
+      <Filter>Graphic\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\colorshaderclass.h">
+      <Filter>Graphic\color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\TextureModel.h">
+      <Filter>Graphic\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\lightshaderclass.h">
+      <Filter>Graphic\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\light.h">
+      <Filter>Graphic\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\ColorModel.h">
+      <Filter>Graphic\color</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\textclass.h">
+      <Filter>Graphic\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\fontshaderclass.h">
+      <Filter>Graphic\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\fontclass.h">
+      <Filter>Graphic\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\cpuclass.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\timerclass.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\fpsclass.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\graphic\shader\color.vs">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\color.ps">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\texture.ps">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\texture.vs">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\light.ps">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\light.vs">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\Asset\zebu.fbx">
+      <Filter>Asset</Filter>
+    </None>
+    <None Include="src\graphic\shader\font.ps">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\graphic\shader\font.vs">
+      <Filter>Shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>
