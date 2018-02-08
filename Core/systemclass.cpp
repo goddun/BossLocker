@@ -181,10 +181,6 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam
 
 void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 {
-#ifdef _DEBUG
-	AllocConsole();
-#endif
-
 
 	WNDCLASSEX wc;
 	DEVMODE dmScreenSettings;

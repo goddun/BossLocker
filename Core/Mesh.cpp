@@ -4,9 +4,20 @@
 
 #define INVALID_OGL_VALUE 0xffffffff
 
+
+void MatrixConvert(const aiMatrix4x4& param, XMMATRIX& out)
+{
+	XMFLOAT4X4 Data;
+	Data._11 = param.a1; Data._12 = param.a2; Data._13 = param.a3; Data._14 = param.a4;
+	Data._21 = param.b1; Data._22 = param.b2; Data._23 = param.b3; Data._24 = param.b4;
+	Data._31 = param.c1; Data._32 = param.c2; Data._33 = param.c3; Data._34 = param.c4;
+	Data._41 = param.d1; Data._42 = param.d2; Data._43 = param.d3; Data._44 = param.d4;
+
+	out = XMLoadFloat4x4(&Data);
+}
+
 Mesh::MeshEntry::MeshEntry()
 {
-
 	NumIndices = 0;
 	m_indexBuffer = NULL;
 	m_vertexBuffer = NULL;
@@ -40,7 +51,7 @@ void Mesh::MeshEntry::Init(ID3D11Device* device, const std::vector<Vertex>& Vert
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
 
-	 // Set up the description of the static vertex buffer.
+	// Set up the description of the static vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(Vertex) * Vertices.size();
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -76,7 +87,8 @@ void Mesh::MeshEntry::Init(ID3D11Device* device, const std::vector<Vertex>& Vert
 }
 
 
-Mesh::Mesh(ID3D11Device * device, ID3D11DeviceContext* deviceContext, LightShaderClass* shader)
+
+Mesh::Mesh(ID3D11Device * device, ID3D11DeviceContext * deviceContext, LightShaderClass * shader)
 {
 	m_device = device;
 	m_deviceContext = deviceContext;
@@ -89,10 +101,7 @@ Mesh::~Mesh()
 	Clear();
 }
 
-void MatrixConvert(const aiMatrix4x4& param, XMMATRIX& out)
-{
 
-}
 
 bool Mesh::LoadMesh(const std::string& Filename)
 {
@@ -108,7 +117,7 @@ bool Mesh::LoadMesh(const std::string& Filename)
 		MatrixConvert( m_pScene->mRootNode->mTransformation, m_GlobalInverseTransform);
 		XMVECTOR det = XMMatrixDeterminant(m_GlobalInverseTransform);
 		m_GlobalInverseTransform = XMMatrixInverse(&det , m_GlobalInverseTransform);//루트 노드의 역행렬 계산.
-		;
+		
 		Ret = InitFromScene(m_pScene, Filename);
 	}
 	else {
@@ -133,9 +142,11 @@ bool Mesh::InitFromScene(const aiScene* pScene, const std::string& Filename)
 
 void Mesh::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 {
+	int boneArraysSize = paiMesh->mNumVertices*NUM_BONES_PER_VEREX;
 
-	std::vector<Vertex> Vertices;
+	std::vector<Vertex> Verticies;
 	std::vector<unsigned int> Indices;
+	vector<VertexBoneData> Bones;
 
 	const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -148,7 +159,7 @@ void Mesh::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 			XMFLOAT2(pTexCoord->x, pTexCoord->y),
 			XMFLOAT3(pNormal->x, pNormal->y, pNormal->z));
 
-		Vertices.push_back(v);
+		Verticies.push_back(v);
 	}
 
 	for (unsigned int i = 0; i < paiMesh->mNumFaces; i++) {
@@ -159,9 +170,51 @@ void Mesh::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 		Indices.push_back(Face.mIndices[2]);
 	}
 
-	m_Entries[Index].Init(m_device,Vertices, Indices);
+	vector<int> boneIDs;
+	boneIDs.resize(boneArraysSize);
+	vector<float> boneWeights;
+	boneWeights.resize(boneArraysSize);
+
+	int boneCount = paiMesh->mNumBones;
+	for (int i = 0; i < boneCount; i++)
+	{
+		aiBone* aiBone = paiMesh->mBones[i];
+		int weightCount = aiBone->mNumWeights;
+		for (int j = 0; j < weightCount; j++)
+		{
+			aiVertexWeight weight = aiBone->mWeights[j];
+
+			unsigned int vertexStart = weight.mVertexId*NUM_BONES_PER_VEREX;
+			for (int k = 0; k < NUM_BONES_PER_VEREX; k++)
+			{
+				if (boneWeights.at(vertexStart + k) == 0)
+				{
+					boneWeights.at(vertexStart + k) = weight.mWeight;
+					boneIDs.at(vertexStart + k) = i;
+
+					
+					Verticies.at(weight.mVertexId).m_boneID[k] = i;
+					Verticies.at(weight.mVertexId).m_weight[k] = weight.mWeight;
+
+					break;
+				}
+			}
+		}
+	}
+
+	for (auto data : Verticies)
+	{
+		
+		printf("pos : %f %f %f  bone id %d %d %d %d\n", data.m_pos.x, data.m_pos.y, data.m_pos.z, data.m_boneID[0], data.m_boneID[1], data.m_boneID[2], data.m_boneID[3]);
+	}
+
+	m_Entries[Index].Init(m_device,Verticies, Indices);
 }
 
+void Mesh::LoadBones(uint MeshIndex, const aiMesh* pMesh)
+{
+
+}
 
 void Mesh::Clear()
 {
@@ -196,12 +249,6 @@ void Mesh::Render(XMMATRIX& worldMatrix, XMMATRIX& viewMatrix,XMMATRIX& projecti
 		// Set the index buffer to active in the input assembler so it can be rendered.
 		m_deviceContext->IASetIndexBuffer(m_Entries[i].m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//const unsigned int MaterialIndex = m_Entries[i].MaterialIndex;
-
-		//if (MaterialIndex < m_Textures.size() && m_Textures[MaterialIndex]) {
-		//	m_Textures[MaterialIndex]->Bind(GL_TEXTURE0);
-		//}
-
 		// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 		m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -211,4 +258,18 @@ void Mesh::Render(XMMATRIX& worldMatrix, XMMATRIX& viewMatrix,XMMATRIX& projecti
 		m_shader->Render(m_deviceContext,m_Entries[i].NumIndices, worldMatrix, viewMatrix, projectionMatrix, texture, { 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 1.0f, 1.0f });
 	}
 
+}
+
+void Mesh::VertexBoneData::AddBoneData(uint BoneID, float Weight)
+{
+	for (uint i = 0; i < ARRAY_SIZE_IN_ELEMENTS(IDs); i++) {
+		if (Weights[i] == 0.0) {
+			IDs[i] = BoneID;
+			Weights[i] = Weight;
+			return;
+		}
+	}
+
+	// should never get here - more bones than we have space for
+	assert(0);
 }

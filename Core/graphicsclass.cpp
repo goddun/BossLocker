@@ -74,7 +74,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	
 
 	Mesh* meshTemp = new Mesh(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), m_Shader);
-	meshTemp->LoadMesh("../Asset/Wolf.dae");
+	meshTemp->LoadMesh("../Asset/md5.md5mesh");
 	object.push_back(meshTemp);
 
 	return true;

@@ -1,6 +1,5 @@
 #pragma once
-#include <map>
-#include <vector>
+
 #include <assimp\scene.h>      // C++ importer interface
 #include <assimp\Importer.hpp>       // Output data structure
 #include<assimp\postprocess.h>
@@ -14,7 +13,10 @@ struct Vertex
 	XMFLOAT3 m_pos;
 	XMFLOAT2 m_tex;
 	XMFLOAT3 m_normal;
+	unsigned int m_boneID[4] = {0,};
+	float m_weight[4] = {0,};
 
+	
 	Vertex() {}
 
 	Vertex(const XMFLOAT3& pos, const XMFLOAT2& tex, const XMFLOAT3& normal)
@@ -38,10 +40,32 @@ public:
 	{
 		return m_Entries[0].NumIndices;
 	}
+
 private:
-	bool InitFromScene(const aiScene* pScene, const std::string& Filename);
-	void InitMesh(unsigned int Index, const aiMesh* paiMesh);
-	void Clear();
+	struct BoneInfo
+	{
+		XMMATRIX BoneOffset = XMMatrixIdentity();
+		XMMATRIX FinalTransformation = XMMatrixIdentity();
+	};
+
+	struct VertexBoneData
+	{
+		uint IDs[NUM_BONES_PER_VEREX];
+		float Weights[NUM_BONES_PER_VEREX];
+
+		VertexBoneData()
+		{
+			Reset();
+		};
+
+		void Reset()
+		{
+			ZERO_MEM(IDs);
+			ZERO_MEM(Weights);
+		}
+
+		void AddBoneData(uint BoneID, float Weight);
+	};
 
 	struct MeshEntry {
 		MeshEntry();
@@ -54,15 +78,28 @@ private:
 
 		unsigned int NumIndices;
 
+		vector<VertexBoneData> BoneData;
 		ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
-	};
 
+		map<string, uint> m_BoneMapping; // maps a bone name to its index
+		vector<BoneInfo> m_BoneInfo;
+		uint m_NumBones=0;
+	};
+private:
+	bool InitFromScene(const aiScene* pScene, const std::string& Filename);
+	void InitMesh(unsigned int Index, const aiMesh* paiMesh);
+	void LoadBones(uint MeshIndex, const aiMesh* pMesh);
+	void Clear();
+
+private:
+	//ASSIMP IMPORT
 	Assimp::Importer m_Importer;
 	const aiScene* m_pScene;
+	//ANIMATION
 	std::vector<MeshEntry> m_Entries;
-
 	XMMATRIX m_GlobalInverseTransform;
 
+	//다이렉트
 	ID3D11Device* m_device;
 	ID3D11DeviceContext* m_deviceContext;
 	LightShaderClass* m_shader;
