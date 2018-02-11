@@ -35,7 +35,9 @@ public:
 	~Mesh();
 
 	bool LoadMesh(const std::string& Filename);
-	void Render(XMMATRIX&, XMMATRIX&, XMMATRIX&, ID3D11ShaderResourceView*);
+	void BoneTransform(float TimeInSeconds, vector<XMMATRIX>& Transforms);
+
+	void Render(float,XMMATRIX&, XMMATRIX&, XMMATRIX&, ID3D11ShaderResourceView*);
 	int GetIndex()
 	{
 		return m_Entries[0].NumIndices;
@@ -81,9 +83,7 @@ private:
 		vector<VertexBoneData> BoneData;
 		ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 
-		map<string, uint> m_BoneMapping; // maps a bone name to its index
-		vector<BoneInfo> m_BoneInfo;
-		uint m_NumBones=0;
+	
 	};
 private:
 	bool InitFromScene(const aiScene* pScene, const std::string& Filename);
@@ -95,10 +95,18 @@ private:
 	//ASSIMP IMPORT
 	Assimp::Importer m_Importer;
 	const aiScene* m_pScene;
-	//ANIMATION
+	//MESH
 	std::vector<MeshEntry> m_Entries;
+	//ANIMATION
 	XMMATRIX m_GlobalInverseTransform;
+	vector<aiNode*>ai_nodes;
+	vector<aiNodeAnim*>ai_nodes_anim;
+	map<string, uint> m_BoneMapping; // maps a bone name to its index
+	vector<BoneInfo> m_BoneInfo;
+	uint m_NumBones = 0;
 
+	void recursiveNodeProcess(aiNode* node);
+	void AnimNodeProcess();
 	//다이렉트
 	ID3D11Device* m_device;
 	ID3D11DeviceContext* m_deviceContext;

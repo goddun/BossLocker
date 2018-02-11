@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -22,20 +18,11 @@
     <Filter Include="Asset">
       <UniqueIdentifier>{f6fabde5-3cf9-448c-ae9e-4b2c70036c9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphic">
+      <UniqueIdentifier>{91977691-c4f1-4483-9d9b-3bcefb51a488}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cameraclass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="d3dclass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="graphicsclass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="modelclass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Mesh</Filter>
     </ClCompile>
@@ -57,23 +44,26 @@
     <ClCompile Include="colorshaderclass.cpp">
       <Filter>shader</Filter>
     </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>SYSTEM</Filter>
+    </ClCompile>
+    <ClCompile Include="cameraclass.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dclass.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="graphicsclass.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="modelclass.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
     <ClCompile Include="textureclass.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Graphic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cameraclass.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dclass.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="graphicsclass.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="modelclass.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Mesh</Filter>
     </ClInclude>
@@ -92,8 +82,23 @@
     <ClInclude Include="colorshaderclass.h">
       <Filter>shader</Filter>
     </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>SYSTEM</Filter>
+    </ClInclude>
+    <ClInclude Include="cameraclass.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dclass.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="graphicsclass.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="modelclass.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
     <ClInclude Include="textureclass.h">
-      <Filter>소스 파일</Filter>
+      <Filter>Graphic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

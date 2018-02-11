@@ -52,6 +52,7 @@ private:
 
 	InputClass* m_Input;
 	GraphicsClass* m_Graphics;
+
 };
 
 
@@ -64,7 +65,7 @@ static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 /////////////
 // GLOBALS //
 /////////////
-static SystemClass* ApplicationHandle = 0;
+static SystemClass* ApplicationHandle = nullptr;
 
 
 #endif

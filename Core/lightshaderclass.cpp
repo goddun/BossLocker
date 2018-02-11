@@ -7,12 +7,7 @@
 
 LightShaderClass::LightShaderClass()
 {
-	m_vertexShader = 0;
-	m_pixelShader = 0;
-	m_layout = 0;
-	m_sampleState = 0;
-	m_matrixBuffer = 0;
-	m_lightBuffer = 0;
+
 }
 
 
@@ -52,13 +47,13 @@ void LightShaderClass::Shutdown()
 
 
 bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor)
+	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, vector<XMMATRIX>& skeletonMatrix)
 {
 	bool result;
 
 
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, diffuseColor);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, diffuseColor, skeletonMatrix);
 	if(!result)
 	{
 		return false;
@@ -82,6 +77,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,const WC
     D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_BUFFER_DESC lightBufferDesc;
+	D3D11_BUFFER_DESC SkeletonBufferDesc;
 
 
 	// Initialize the pointers this function will use to null.
@@ -141,8 +137,10 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,const WC
 		return false;
 	}
 
-	// Create the vertex input layout description.
-	// This setup needs to match the VertexType stucture in the ModelClass and in the shader.
+	//정점별 데이터를 전달할 input layout 생성
+	//위치, 노말, 텍스쳐, 뼈 아이디, 뼈 무게값 총 다섯개
+	//	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; 으로
+	//버퍼안에 데이터가 어떻게 구성되었는지는 cpu에 맡긴다.
 	polygonLayout[0].SemanticName = "POSITION";
 	polygonLayout[0].SemanticIndex = 0;
 	polygonLayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
@@ -171,7 +169,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,const WC
 	polygonLayout[3].SemanticIndex = 1;
 	polygonLayout[3].Format = DXGI_FORMAT_R32G32B32A32_UINT;
 	polygonLayout[3].InputSlot = 0;
-	polygonLayout[3].AlignedByteOffset = 0;
+	polygonLayout[3].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[3].InstanceDataStepRate = 0;
 
@@ -179,7 +177,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,const WC
 	polygonLayout[4].SemanticIndex = 2;
 	polygonLayout[4].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	polygonLayout[4].InputSlot = 0;
-	polygonLayout[4].AlignedByteOffset = 0;
+	polygonLayout[4].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[4].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[4].InstanceDataStepRate = 0;
 
@@ -201,7 +199,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,const WC
 	pixelShaderBuffer->Release();
 	pixelShaderBuffer = 0;
 
-	// Create a texture sampler state description.
+	// 텍스쳐 샘플러 만들기.
     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
     samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
     samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -223,7 +221,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,const WC
 		return false;
 	}
 
-	// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
+	// 월드, 뷰, 투영 행렬을 전달할 상수버퍼를 만든다.
     matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
     matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -253,6 +251,15 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,const WC
 	{
 		return false;
 	}
+
+	SkeletonBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	SkeletonBufferDesc.ByteWidth = sizeof(SkeletonBufferType);
+	SkeletonBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	SkeletonBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	SkeletonBufferDesc.MiscFlags = 0;
+	SkeletonBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&SkeletonBufferDesc, NULL, &m_skeletonBuffer);
 
 	return true;
 }
@@ -344,13 +351,14 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 
 bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection,
-	XMFLOAT4 diffuseColor)
+	XMFLOAT4 diffuseColor, vector<XMMATRIX>& skeletonMatrix)
 {
 	HRESULT result;
     D3D11_MAPPED_SUBRESOURCE mappedResource;
 	unsigned int bufferNumber;
 	MatrixBufferType* dataPtr;
 	LightBufferType* dataPtr2;
+	SkeletonBufferType* skeletonData;
 
 
 	// Transpose the matrices to prepare them for the shader.
@@ -380,7 +388,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 	bufferNumber = 0;
 
 	// Now set the constant buffer in the vertex shader with the updated values.
-    deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+    deviceContext->VSSetConstantBuffers(bufferNumber, 2, &m_matrixBuffer);
 
 	// Set shader texture resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 1, &texture);
@@ -408,6 +416,30 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 
 	// Finally set the light constant buffer in the pixel shader with the updated values.
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
+
+
+	// 데이터를 넣기 위해 스켈레톤 상수버퍼를 락
+	result = deviceContext->Map(m_skeletonBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+	{
+		return false;
+	}
+	//락이 완료 됬다면
+	// Get a pointer to the data in the constant buffer.
+	skeletonData = (SkeletonBufferType*)mappedResource.pData;
+	auto vectorSize = skeletonMatrix.size();
+	for (int i = 0; i < vectorSize; i++)
+	{
+		skeletonData->bone[i] = skeletonMatrix[i];
+	}
+	// Unlock the constant buffer.
+	deviceContext->Unmap(m_skeletonBuffer, 0);
+
+	// Set the position of the constant buffer in the vertex shader. 두번째 상수 버퍼이므로 1을 넣는다.
+	bufferNumber++;
+
+	// Now set the constant buffer in the vertex shader with the updated values.
+	deviceContext->VSSetConstantBuffers(bufferNumber, 2, &m_matrixBuffer);
 
 	return true;
 }

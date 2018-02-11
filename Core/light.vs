@@ -14,6 +14,11 @@ cbuffer MatrixBuffer
 };
 
 
+cbuffer SkeletonBuffer
+{
+	matrix bone[100];
+}
+
 //////////////
 // TYPEDEFS //
 //////////////

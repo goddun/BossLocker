@@ -15,6 +15,7 @@
 #include"lightshaderclass.h"
 #include"textureclass.h"
 #include"Mesh.h"
+#include"timer.h"
 
 /////////////
 // GLOBALS //
@@ -47,6 +48,8 @@ private:
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
 	LightShaderClass* m_Shader;
+	Timer* m_timer=nullptr;
+
 	vector<Mesh*> object;
 	TextureClass* testTexture;
 };

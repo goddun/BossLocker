@@ -178,8 +178,25 @@ void Mesh::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 	int boneCount = paiMesh->mNumBones;
 	for (int i = 0; i < boneCount; i++)
 	{
-		aiBone* aiBone = paiMesh->mBones[i];
-		int weightCount = aiBone->mNumWeights;
+		aiBone* aiBone = paiMesh->mBones[i];//뼈에 대한 포인터를 얻어와서
+//뼈에 대한 데이터 구조를 만든다.
+		uint BoneIndex = 0;
+		string BoneName(paiMesh->mBones[i]->mName.data);
+
+		if (m_BoneMapping.find(BoneName) == m_BoneMapping.end()) {
+			BoneIndex = m_NumBones;
+			m_NumBones++;
+			BoneInfo bi;
+			m_BoneInfo.push_back(bi);
+		}
+		else {
+			BoneIndex = m_BoneMapping[BoneName];
+		}
+
+		m_BoneMapping[BoneName] = BoneIndex;
+		MatrixConvert(paiMesh->mBones[i]->mOffsetMatrix, m_BoneInfo[BoneIndex].BoneOffset);
+//뼈 무게, 아이디 -> 버택스별 데이터 넣기, 쉐이더에 전달할 데이터임
+		int weightCount = aiBone->mNumWeights;//무게값 넣기
 		for (int j = 0; j < weightCount; j++)
 		{
 			aiVertexWeight weight = aiBone->mWeights[j];
@@ -205,7 +222,7 @@ void Mesh::InitMesh(unsigned int Index, const aiMesh* paiMesh)
 	for (auto data : Verticies)
 	{
 		
-		printf("pos : %f %f %f  bone id %d %d %d %d\n", data.m_pos.x, data.m_pos.y, data.m_pos.z, data.m_boneID[0], data.m_boneID[1], data.m_boneID[2], data.m_boneID[3]);
+		printf("weight : %f %f %f %f  bone id %d %d %d %d\n", data.m_weight[0], data.m_weight[1], data.m_weight[2], data.m_weight[3], data.m_boneID[0], data.m_boneID[1], data.m_boneID[2], data.m_boneID[3]);
 	}
 
 	m_Entries[Index].Init(m_device,Verticies, Indices);
@@ -233,10 +250,11 @@ void Mesh::Clear()
 	}
 }
 
-void Mesh::Render(XMMATRIX& worldMatrix, XMMATRIX& viewMatrix,XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture)
+void Mesh::Render(float frameTime,XMMATRIX& worldMatrix, XMMATRIX& viewMatrix,XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture)
 {
 	for (unsigned int i = 0; i < m_Entries.size(); i++) {
 
+		vector<XMMATRIX> skeleton;
 		unsigned int stride;
 		unsigned int offset;
 		// Set vertex buffer stride and offset.
@@ -252,10 +270,12 @@ void Mesh::Render(XMMATRIX& worldMatrix, XMMATRIX& viewMatrix,XMMATRIX& projecti
 		// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 		m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		 XMMATRIX move = XMMatrixTranslation(0, 0,0);
+		 XMMATRIX move = XMMatrixTranslation(position.x,position.y,position.z);
 		 worldMatrix = XMMatrixMultiply(worldMatrix, move);
 
-		m_shader->Render(m_deviceContext,m_Entries[i].NumIndices, worldMatrix, viewMatrix, projectionMatrix, texture, { 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 1.0f, 1.0f });
+		 BoneTransform(frameTime, skeleton);
+
+		m_shader->Render(m_deviceContext,m_Entries[i].NumIndices, worldMatrix, viewMatrix, projectionMatrix, texture, { 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 1.0f, 1.0f },skeleton);
 	}
 
 }
@@ -272,4 +292,22 @@ void Mesh::VertexBoneData::AddBoneData(uint BoneID, float Weight)
 
 	// should never get here - more bones than we have space for
 	assert(0);
+}
+
+void Mesh::BoneTransform(float TimeInSeconds, vector<XMMATRIX>& Transforms)
+{
+	XMMATRIX Identity = XMMatrixIdentity();
+
+	float TicksPerSecond = m_pScene->mAnimations[0]->mTicksPerSecond != 0 ?
+		m_pScene->mAnimations[0]->mTicksPerSecond : 25.0f;
+	float TimeInTicks = TimeInSeconds * TicksPerSecond;
+	float AnimationTime = fmod(TimeInTicks, m_pScene->mAnimations[0]->mDuration);
+
+	//ReadNodeHeirarchy(AnimationTime, m_pScene->mRootNode, Identity);
+
+	Transforms.resize(m_NumBones);
+
+	for (uint i = 0; i < m_NumBones; i++) {
+		Transforms[i] = m_BoneInfo[i].FinalTransformation;
+	}
 }

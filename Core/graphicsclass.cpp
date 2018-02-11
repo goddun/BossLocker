@@ -69,12 +69,17 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	m_timer = new Timer;
+
+
 	testTexture = new TextureClass;
 	testTexture->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(),L"../Asset/bricks.jpg",WIC);
 	
 
 	Mesh* meshTemp = new Mesh(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), m_Shader);
 	meshTemp->LoadMesh("../Asset/md5.md5mesh");
+	meshTemp->position = { 0,0,100 };
+
 	object.push_back(meshTemp);
 
 	return true;
@@ -104,6 +109,11 @@ void GraphicsClass::Shutdown()
 		m_Direct3D->Shutdown();
 		delete m_Direct3D;
 		m_Direct3D = 0;
+	}
+	if (m_timer)
+	{
+		delete m_timer;
+		m_timer = nullptr;
 	}
 
 	object.clear();
@@ -148,7 +158,7 @@ bool GraphicsClass::Render()
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	for (auto mesh : object)
 	{
-		mesh->Render(worldMatrix, viewMatrix, projectionMatrix,testTexture->GetTexture());
+		mesh->Render(m_timer->GetFrameTime(),worldMatrix, viewMatrix, projectionMatrix,testTexture->GetTexture());
 	}
 
 	// Present the rendered scene to the screen.
