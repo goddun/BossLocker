@@ -5,11 +5,7 @@
 #define _LIGHTSHADERCLASS_H_
 
 
-//////////////
-// INCLUDES //
-//////////////
-#include <d3dcompiler.h>
-#include <fstream>
+
 using namespace std;
 
 

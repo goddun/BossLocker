@@ -10,20 +10,15 @@
 ///////////////////////
 #include "d3dclass.h"
 #include "cameraclass.h"
-#include "modelclass.h"
 #include "colorshaderclass.h"
 #include"lightshaderclass.h"
 #include"textureclass.h"
 #include"Mesh.h"
+#include"StaticMesh.h"
+#include"Model.h"
 #include"timer.h"
 
-/////////////
-// GLOBALS //
-/////////////
-const bool FULL_SCREEN = false;
-const bool VSYNC_ENABLED = true;
-const float SCREEN_DEPTH = 1000.0f;
-const float SCREEN_NEAR = 0.1f;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +32,7 @@ public:
 	~GraphicsClass();
 
 	bool Initialize(int, int, HWND);
+	bool SetModel();
 	void Shutdown();
 	bool Frame();
 
@@ -46,11 +42,10 @@ private:
 private:
 	D3DClass* m_Direct3D;
 	CameraClass* m_Camera;
-	ModelClass* m_Model;
-	LightShaderClass* m_Shader;
+	ColorShaderClass* m_Shader;
 	Timer* m_timer=nullptr;
 
-	vector<Mesh*> object;
+	vector<Model*> object;
 	TextureClass* testTexture;
 };
 

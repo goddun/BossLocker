@@ -35,6 +35,7 @@ public:
 
 	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, const wchar_t*, int type);
 	void Shutdown();
+	
 
 	ID3D11ShaderResourceView* GetTexture();
 

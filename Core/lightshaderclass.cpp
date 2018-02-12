@@ -418,7 +418,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
 
 
-	// 데이터를 넣기 위해 스켈레톤 상수버퍼를 락
+	//// 데이터를 넣기 위해 스켈레톤 상수버퍼를 락
 	result = deviceContext->Map(m_skeletonBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
@@ -427,11 +427,6 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 	//락이 완료 됬다면
 	// Get a pointer to the data in the constant buffer.
 	skeletonData = (SkeletonBufferType*)mappedResource.pData;
-	auto vectorSize = skeletonMatrix.size();
-	for (int i = 0; i < vectorSize; i++)
-	{
-		skeletonData->bone[i] = skeletonMatrix[i];
-	}
 	// Unlock the constant buffer.
 	deviceContext->Unmap(m_skeletonBuffer, 0);
 

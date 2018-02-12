@@ -9,7 +9,6 @@ GraphicsClass::GraphicsClass()
 {
 	m_Direct3D = 0;
 	m_Camera = 0;
-	m_Model = 0;
 	m_Shader = 0;
 }
 
@@ -55,7 +54,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
 
 	// Create the color shader object.
-	m_Shader = new LightShaderClass;
+	m_Shader = new ColorShaderClass;
 	if (!m_Shader)
 	{
 		return false;
@@ -72,17 +71,24 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_timer = new Timer;
 
 
-	testTexture = new TextureClass;
-	testTexture->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(),L"../Asset/bricks.jpg",WIC);
+
+	/*Mesh* meshTemp = new Mesh(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), m_Shader);
+	meshTemp->LoadMesh("../Asset/wolf.dae");
+	meshTemp->position = { 0,0,10 };*/
+
+	StaticMesh* objTest = new StaticMesh(m_Direct3D->GetDevice(),m_Direct3D->GetDeviceContext(),m_Shader);
+	objTest->LoadMesh("../Asset/Brown_Cliff_01.obj",true,false);
+
+	object.push_back(static_cast<Model*>(objTest));
 	
 
-	Mesh* meshTemp = new Mesh(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), m_Shader);
-	meshTemp->LoadMesh("../Asset/md5.md5mesh");
-	meshTemp->position = { 0,0,100 };
-
-	object.push_back(meshTemp);
-
 	return true;
+}
+
+bool GraphicsClass::SetModel()
+{
+	
+	return false;
 }
 
 
@@ -158,7 +164,10 @@ bool GraphicsClass::Render()
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	for (auto mesh : object)
 	{
-		mesh->Render(m_timer->GetFrameTime(),worldMatrix, viewMatrix, projectionMatrix,testTexture->GetTexture());
+		//mesh->position.y = -50;
+		mesh->position.z = 0;
+		mesh->rotation.x = -45*PI/180.0f;
+		mesh->Render(m_timer->GetFrameTime(),worldMatrix, viewMatrix, projectionMatrix);
 	}
 
 	// Present the rendered scene to the screen.

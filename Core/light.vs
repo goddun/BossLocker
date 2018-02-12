@@ -50,11 +50,22 @@ PixelInputType LightVertexShader(VertexInputType input)
 	// Change the position vector to be 4 units for proper matrix calculations.
     input.position.w = 1.0f;
 
+
+
 	// Calculate the position of the vertex against the world, view, and projection matrices.
     output.position = mul(input.position, worldMatrix);
     output.position = mul(output.position, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
     
+
+	matrix BoneTransform = bone[input.boneID.x]*input.boneWeight.x;
+	BoneTransform = BoneTransform+ bone[input.boneID.y]*input.boneWeight.y;
+	BoneTransform = BoneTransform+ bone[input.boneID.z]*input.boneWeight.z;
+	BoneTransform = BoneTransform+ bone[input.boneID.w]*input.boneWeight.w;
+
+	input.position = mul(input.position,BoneTransform );
+	input.normal = mul(input.normal,(float3x3)BoneTransform );
+
 	// Store the texture coordinates for the pixel shader.
 	output.tex = input.tex;
     

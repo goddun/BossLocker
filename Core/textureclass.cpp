@@ -37,122 +37,129 @@ bool TextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	UINT                        g_iMaxIndex = 1;
 
 	TexMetadata mdata;
-	hResult = GetMetadataFromWICFile(filename, WIC_FLAGS_NONE, mdata);
-	if (FAILED(hResult))
-	{
-		wchar_t buff[2048] = {};
-		swprintf_s(buff, L"Failed to open texture file\n\nFilename = %ls\nHRESULT %08X", filename, hResult);
-		MessageBox(nullptr, buff, L"DDSView", MB_OK | MB_ICONEXCLAMATION);
-		return 0;
-	}
-	
 
-	if (mdata.dimension == TEX_DIMENSION_TEXTURE3D)
+	if (type == WIC)
 	{
-		if (mdata.arraySize > 1)
+		hResult = GetMetadataFromWICFile(filename, WIC_FLAGS_NONE, mdata);
+		if (FAILED(hResult))
 		{
 			wchar_t buff[2048] = {};
-			swprintf_s(buff, L"Arrays of volume textures are not supported\n\nFilename = %ls\nArray size %Iu", filename, mdata.arraySize);
+			swprintf_s(buff, L"Failed to open texture file\n\nFilename = %ls\nHRESULT %08X", filename, hResult);
 			MessageBox(nullptr, buff, L"DDSView", MB_OK | MB_ICONEXCLAMATION);
 			return 0;
 		}
 
-		g_iMaxIndex = static_cast<UINT>(mdata.depth);
+
+		if (mdata.dimension == TEX_DIMENSION_TEXTURE3D)
+		{
+			if (mdata.arraySize > 1)
+			{
+				wchar_t buff[2048] = {};
+				swprintf_s(buff, L"Arrays of volume textures are not supported\n\nFilename = %ls\nArray size %Iu", filename, mdata.arraySize);
+				MessageBox(nullptr, buff, L"DDSView", MB_OK | MB_ICONEXCLAMATION);
+				return 0;
+			}
+
+			g_iMaxIndex = static_cast<UINT>(mdata.depth);
+		}
+		else
+		{
+			g_iMaxIndex = static_cast<UINT>(mdata.arraySize);
+		}
+
+
+		UINT flags = 0;
+		hResult = device->CheckFormatSupport(mdata.format, &flags);
+		if (FAILED(hResult) || !(flags & (D3D11_FORMAT_SUPPORT_TEXTURE1D | D3D11_FORMAT_SUPPORT_TEXTURE2D | D3D11_FORMAT_SUPPORT_TEXTURE3D)))
+		{
+			wchar_t buff[2048] = {};
+			swprintf_s(buff, L"Format not supported by DirectX hardware\n\n");
+			MessageBox(nullptr, buff, L"DDSView", MB_OK | MB_ICONEXCLAMATION);
+			return 0;
+		}
+
+
+		auto image = std::make_unique<ScratchImage>();
+		hResult = LoadFromWICFile((const wchar_t*)filename, WIC_FLAGS_NONE, nullptr, *image);
+
+		if (FAILED(hResult))
+		{
+			wchar_t buff[2048] = {};
+			swprintf_s(buff, L"Failed to load texture file\n\nFilename = %ls\nHRESULT %08X", filename, hResult);
+			MessageBox(nullptr, buff, L"DDSView", MB_OK | MB_ICONEXCLAMATION);
+			return 0;
+		}
+
+		// Special case to make sure Texture cubes remain arrays
+		mdata.miscFlags &= ~TEX_MISC_TEXTURECUBE;
+
+		hResult = CreateShaderResourceView(device, image->GetImages(), image->GetImageCount(), mdata, &m_textureView);
+		if (FAILED(hResult))
+		{
+			wchar_t buff[2048] = {};
+			swprintf_s(buff, L"Failed creating texture from file\n\nFilename = %ls\nHRESULT = %08X", filename, hResult);
+			MessageBox(nullptr, buff, L"DDSView", MB_OK | MB_ICONEXCLAMATION);
+			return 0;
+		}
+
+		image.release();
 	}
-	else
+	if (type == TGA)
 	{
-		g_iMaxIndex = static_cast<UINT>(mdata.arraySize);
+		// Load the targa image data into memory.
+		result = LoadTarga((const char*)filename, height, width);
+		if(!result)
+		{
+			return false;
+		}
+
+		// Setup the description of the texture.
+		textureDesc.Height = height;
+		textureDesc.Width = width;
+		textureDesc.MipLevels = 0;
+		textureDesc.ArraySize = 1;
+		textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+		textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+		textureDesc.CPUAccessFlags = 0;
+		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
+
+		// Create the empty texture.
+		hResult = device->CreateTexture2D(&textureDesc, NULL, &m_texture);
+		if(FAILED(hResult))
+		{
+			return false;
+		}
+
+		// Set the row pitch of the targa image data.
+		rowPitch = (width * 4) * sizeof(unsigned char);
+
+		// Copy the targa image data into the texture.
+		deviceContext->UpdateSubresource(m_texture, 0, NULL, m_targaData, rowPitch, 0);
+
+		// Setup the shader resource view description.
+		srvDesc.Format = textureDesc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = -1;
+
+		// Create the shader resource view for the texture.
+		hResult = device->CreateShaderResourceView(m_texture, &srvDesc, &m_textureView);
+		if(FAILED(hResult))
+		{
+			return false;
+		}
+
+		// Generate mipmaps for this texture.
+		deviceContext->GenerateMips(m_textureView);
+
+		// Release the targa image data now that the image data has been loaded into the texture.
+		delete [] m_targaData;
+		m_targaData = 0;
 	}
 
-
-	UINT flags = 0;
-	hResult = device->CheckFormatSupport(mdata.format, &flags);
-	if (FAILED(hResult) || !(flags & (D3D11_FORMAT_SUPPORT_TEXTURE1D | D3D11_FORMAT_SUPPORT_TEXTURE2D | D3D11_FORMAT_SUPPORT_TEXTURE3D)))
-	{
-		wchar_t buff[2048] = {};
-		swprintf_s(buff, L"Format not supported by DirectX hardware\n\n");
-		MessageBox(nullptr, buff, L"DDSView", MB_OK | MB_ICONEXCLAMATION);
-		return 0;
-	}
-
-
-	auto image = std::make_unique<ScratchImage>();
-	hResult = LoadFromWICFile((const wchar_t*)filename, WIC_FLAGS_NONE, nullptr, *image);
-
-	if (FAILED(hResult))
-	{
-		wchar_t buff[2048] = {};
-		swprintf_s(buff, L"Failed to load texture file\n\nFilename = %ls\nHRESULT %08X", filename, hResult);
-		MessageBox(nullptr, buff, L"DDSView", MB_OK | MB_ICONEXCLAMATION);
-		return 0;
-	}
-
-	// Special case to make sure Texture cubes remain arrays
-	mdata.miscFlags &= ~TEX_MISC_TEXTURECUBE;
-
-	hResult = CreateShaderResourceView(device, image->GetImages(), image->GetImageCount(), mdata, &m_textureView);
-	if (FAILED(hResult))
-	{
-		wchar_t buff[2048] = {};
-		swprintf_s(buff, L"Failed creating texture from file\n\nFilename = %ls\nHRESULT = %08X", filename, hResult);
-		MessageBox(nullptr, buff, L"DDSView", MB_OK | MB_ICONEXCLAMATION);
-		return 0;
-	}
-
-	image.release();
-
-	//// Load the targa image data into memory.
-	//result = LoadTarga(filename, height, width);
-	//if(!result)
-	//{
-	//	return false;
-	//}
-
-	//// Setup the description of the texture.
-	//textureDesc.Height = height;
-	//textureDesc.Width = width;
-	//textureDesc.MipLevels = 0;
-	//textureDesc.ArraySize = 1;
-	//textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//textureDesc.SampleDesc.Count = 1;
-	//textureDesc.SampleDesc.Quality = 0;
-	//textureDesc.Usage = D3D11_USAGE_DEFAULT;
-	//textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	//textureDesc.CPUAccessFlags = 0;
-	//textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
-
-	//// Create the empty texture.
-	//hResult = device->CreateTexture2D(&textureDesc, NULL, &m_texture);
-	//if(FAILED(hResult))
-	//{
-	//	return false;
-	//}
-
-	//// Set the row pitch of the targa image data.
-	//rowPitch = (width * 4) * sizeof(unsigned char);
-
-	//// Copy the targa image data into the texture.
-	//deviceContext->UpdateSubresource(m_texture, 0, NULL, m_targaData, rowPitch, 0);
-
-	//// Setup the shader resource view description.
-	//srvDesc.Format = textureDesc.Format;
-	//srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	//srvDesc.Texture2D.MostDetailedMip = 0;
-	//srvDesc.Texture2D.MipLevels = -1;
-
-	//// Create the shader resource view for the texture.
-	//hResult = device->CreateShaderResourceView(m_texture, &srvDesc, &m_textureView);
-	//if(FAILED(hResult))
-	//{
-	//	return false;
-	//}
-
-	//// Generate mipmaps for this texture.
-	//deviceContext->GenerateMips(m_textureView);
-
-	//// Release the targa image data now that the image data has been loaded into the texture.
-	//delete [] m_targaData;
-	//m_targaData = 0;
 
 	return true;
 }
