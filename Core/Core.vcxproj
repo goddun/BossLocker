@@ -164,7 +164,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="ShaderSystem.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
@@ -183,7 +182,6 @@
     </ClInclude>
     <ClInclude Include="Model.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ShaderSystem.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureclass.h" />

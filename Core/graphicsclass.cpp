@@ -7,6 +7,9 @@
 
 GraphicsClass::GraphicsClass()
 {
+	m_Direct3D = 0;
+	m_Camera = 0;
+	m_Shader = 0;
 }
 
 
@@ -51,12 +54,17 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
 
 	// Create the color shader object.
-	m_shaderSystem = new ShaderSystem(m_Direct3D->GetDevice(),m_Direct3D->GetDeviceContext());
-	if (!m_shaderSystem)
+	m_Shader = new ColorShaderClass;
+	if (!m_Shader)
 	{
-#ifdef _DEBUG
-		cout << "initialize ShaderSystem Error"<<endl;
-#endif
+		return false;
+	}
+
+	// Initialize the color shader object.
+	result = m_Shader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -68,8 +76,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	meshTemp->LoadMesh("../Asset/wolf.dae");
 	meshTemp->position = { 0,0,10 };*/
 
-	StaticMesh* objTest = new StaticMesh(m_Direct3D->GetDevice(),m_Direct3D->GetDeviceContext(),m_shaderSystem);
-	objTest->LoadMesh("../Asset/spaceCompound.obj",true,false);
+	StaticMesh* objTest = new StaticMesh(m_Direct3D->GetDevice(),m_Direct3D->GetDeviceContext(),m_Shader);
+	objTest->LoadMesh("../Asset/Brown_Cliff_01.obj",true,false);
 
 	object.push_back(static_cast<Model*>(objTest));
 	
@@ -86,7 +94,13 @@ bool GraphicsClass::SetModel()
 
 void GraphicsClass::Shutdown()
 {
-
+	// Release the color shader object.
+	if (m_Shader)
+	{
+		m_Shader->Shutdown();
+		delete m_Shader;
+		m_Shader = 0;
+	}
 
 	// Release the camera object.
 	if (m_Camera)

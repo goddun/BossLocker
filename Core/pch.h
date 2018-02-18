@@ -39,8 +39,7 @@ using namespace DirectX;
 #define SCREEN_DEPTH     1000.0f
 #define SCREEN_NEAR		 0.1f
 
-#define COLOR_SHADER 0x01
-#define ANIMATION_SHADER 0x02
+
 
 
 

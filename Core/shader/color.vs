@@ -3,54 +3,52 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-struct Light
+/////////////
+// GLOBALS //
+/////////////
+cbuffer MatrixBuffer
 {
-	float3 pos;
-	float  range;
-	float3 dir;
-	float cone;
-	float3 att;
-	float4 ambient;
-	float4 diffuse;
-};
-
-cbuffer cbPerFrame
-{
-	Light light;
-};
-
-cbuffer cbPerObject
-{
-	float4x4 WVP;
-    float4x4 World;
-
-	float4 difColor;
-	bool hasTexture;
-};
-
-Texture2D ObjTexture;
-SamplerState ObjSamplerState;
-TextureCube SkyMap;
-
-struct VS_OUTPUT
-{
-	float4 Pos : SV_POSITION;
-	float4 worldPos : POSITION;
-	float2 TexCoord : TEXCOORD;
-	float3 normal : NORMAL;
+	matrix worldMatrix;
+	matrix viewMatrix;
+	matrix projectionMatrix;
 };
 
 
-VS_OUTPUT VS(float4 inPos : POSITION, float2 inTexCoord : TEXCOORD, float3 normal : NORMAL)
+
+//////////////
+// TYPEDEFS //
+//////////////
+struct VertexInputType
 {
-    VS_OUTPUT output;
+    float4 position : POSITION;
+    float4 color : COLOR;
+};
 
-    output.Pos = mul(inPos, WVP);
-	output.worldPos = mul(inPos, World);
+struct PixelInputType
+{
+    float4 position : SV_POSITION;
+    float4 color : COLOR;
+};
 
-	output.normal = mul(normal, World);
 
-    output.TexCoord = inTexCoord;
+////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
+////////////////////////////////////////////////////////////////////////////////
+PixelInputType ColorVertexShader(VertexInputType input)
+{
+    PixelInputType output;
+    
 
+	// Change the position vector to be 4 units for proper matrix calculations.
+    input.position.w = 1.0f;
+
+	// Calculate the position of the vertex against the world, view, and projection matrices.
+    output.position = mul(input.position, worldMatrix);
+    output.position = mul(output.position, viewMatrix);
+    output.position = mul(output.position, projectionMatrix);
+    
+	// Store the input color for the pixel shader to use.
+    output.color = input.color;
+    
     return output;
 }
