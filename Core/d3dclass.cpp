@@ -430,6 +430,11 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 	// Clear the depth buffer.
 	m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
+	m_deviceContext->OMGetRenderTargets(1, &m_renderTargetView, &m_depthStencilView);
+
+	//Set the default blend state (no blending) for opaque objects
+	m_deviceContext->OMSetBlendState(0, 0, 0xffffffff);
+
 	return;
 }
 

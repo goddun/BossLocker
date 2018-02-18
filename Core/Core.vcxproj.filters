@@ -60,6 +60,7 @@
     <ClCompile Include="timer.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -101,6 +102,7 @@
     <ClInclude Include="colorshaderclass.h">
       <Filter>shader</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\color.ps">

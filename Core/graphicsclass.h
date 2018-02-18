@@ -12,6 +12,7 @@
 #include "cameraclass.h"
 #include "colorshaderclass.h"
 #include"lightshaderclass.h"
+#include"ShaderSystem.h"
 #include"textureclass.h"
 #include"Mesh.h"
 #include"StaticMesh.h"
@@ -40,13 +41,13 @@ private:
 	bool Render();
 
 private:
-	D3DClass* m_Direct3D;
-	CameraClass* m_Camera;
-	ColorShaderClass* m_Shader;
+	D3DClass* m_Direct3D=nullptr;
+	CameraClass* m_Camera=nullptr;
+	ShaderSystem* m_shaderSystem=nullptr;
 	Timer* m_timer=nullptr;
 
 	vector<Model*> object;
-	TextureClass* testTexture;
+	TextureClass* testTexture=nullptr;
 };
 
 #endif
