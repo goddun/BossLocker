@@ -38,7 +38,7 @@ CLightManager g_LightManager;
 
 // HUD values
 bool g_bShowHud = true;
-D3DXVECTOR3 g_vAmbientLowerColor = D3DXVECTOR3(0.1f, 0.2f, 0.1f);
+D3DXVECTOR3 g_vAmbientLowerColor = D3DXVECTOR3(0.1f, 0.1f, 0.1f);
 D3DXVECTOR3 g_vAmbientUpperColor = D3DXVECTOR3(0.1f, 0.2f, 0.2f);
 D3DXVECTOR3 g_vDirLightDir = D3DXVECTOR3(0.0, -1.0f, 0.0f);
 D3DXVECTOR3 g_vDirLightColor = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
