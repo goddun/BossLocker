@@ -356,7 +356,7 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 		g_LightManager.LightSetup(pd3dImmediateContext, i);
 		g_SceneManager.RenderScene(pd3dImmediateContext);
 	}
-	
+
 	// Resotre the previous depth state
 	pd3dImmediateContext->OMSetDepthStencilState(pPrevDepthState, nPrevStencil);
 	SAFE_RELEASE( pPrevDepthState );
