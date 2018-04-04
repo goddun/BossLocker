@@ -1,17 +1,18 @@
+#include "common.hlsl"
+
 /////////////////////////////////////////////////////////////////////////////
 // Constant Buffers
 /////////////////////////////////////////////////////////////////////////////
-cbuffer cbPerObjectVS : register( b0 ) // Model constants
+cbuffer cbPerObjectVS : register( b0 ) // Model vertex shader constants
 {
     float4x4 WorldViewProjection	: packoffset( c0 );
 	float4x4 World					: packoffset( c4 );
 }
 
-cbuffer cbPerObjectPS : register( b0 ) // Model constants
+cbuffer cbPerObjectPS : register( b0 ) // Model pixel shader constants
 {
-    float3 EyePosition	: packoffset( c0 );
-	float specExp		: packoffset( c0.w );
-	float specIntensity	: packoffset( c1 );
+	float specExp		: packoffset( c0 );
+	float specIntensity	: packoffset( c0.y );
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -35,16 +36,11 @@ struct VS_OUTPUT
     float4 Position	: SV_POSITION;	// vertex position 
     float2 UV		: TEXCOORD0;	// vertex texture coords
 	float3 Normal	: TEXCOORD1;	// vertex normal
-	float3 WorldPos	: TEXCOORD2;	// vertex world position
 };
 
 /////////////////////////////////////////////////////////////////////////////
 // Vertex shader
 /////////////////////////////////////////////////////////////////////////////
-float4 DepthPrePassVS(float4 Position : POSITION) : SV_POSITION
-{
-	return mul( Position, WorldViewProjection );
-}
 
 VS_OUTPUT RenderSceneVS( VS_INPUT input )
 {
@@ -53,45 +49,47 @@ VS_OUTPUT RenderSceneVS( VS_INPUT input )
     
     // Transform the position from object space to homogeneous projection space
     Output.Position = mul( input.Position, WorldViewProjection );
-    
-	// Transform the position to world space
-	Output.WorldPos = mul(input.Position, World).xyz;
 
     // Just copy the texture coordinate through
     Output.UV = input.UV; 
 
+	// Transform the normal to world space
 	Output.Normal = mul(input.Normal, (float3x3)World);
     
     return Output;    
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// Pixel shaders
+// Pixel shader
 /////////////////////////////////////////////////////////////////////////////
 
-// Material preparation
-struct Material
+struct PS_GBUFFER_OUT
 {
-   float3 normal;
-   float4 diffuseColor;
-   float specExp;
-   float specIntensity;
+	float4 ColorSpecInt : SV_TARGET0;
+	float4 Normal : SV_TARGET1;
+	float4 SpecPow : SV_TARGET2;
 };
 
-Material PrepareMaterial(float3 normal, float2 UV)
+PS_GBUFFER_OUT PackGBuffer(float3 BaseColor, float3 Normal, float SpecIntensity, float SpecPower)
 {
-	Material material;
+	PS_GBUFFER_OUT Out;
 
-	// Normalize the interpulated vertex normal
-	material.normal = normalize(normal);
+	// Normalize the specular power
+	float SpecPowerNorm = max(0.0001, (SpecPower - g_SpecPowerRange.x) / g_SpecPowerRange.y);
 
-	// Sample the texture and convert to linear space
-    material.diffuseColor = DiffuseTexture.Sample( LinearSampler, UV );
-	material.diffuseColor.rgb *= material.diffuseColor.rgb;
+	// Pack all the data into the GBuffer structure
+	Out.ColorSpecInt = float4(BaseColor.rgb, SpecIntensity);
+	Out.Normal = float4(Normal * 0.5 + 0.5, 0.0);
+	Out.SpecPow = float4(SpecPowerNorm, 0.0, 0.0, 0.0);
 
-	// Copy the specular values from the constant buffer
-	material.specExp = specExp;
-	material.specIntensity = specIntensity;
+	return Out;
+}
 
-	return material;
-} 
+PS_GBUFFER_OUT RenderScenePS( VS_OUTPUT In )
+{ 
+    // Lookup mesh texture and modulate it with diffuse
+    float3 DiffuseColor = DiffuseTexture.Sample( LinearSampler, In.UV );
+	DiffuseColor *= DiffuseColor;
+
+	return PackGBuffer(DiffuseColor, normalize(In.Normal), specIntensity, specExp);
+}
