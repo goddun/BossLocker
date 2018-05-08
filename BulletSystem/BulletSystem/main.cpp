@@ -9,8 +9,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 {
 	SystemClass* System;
 	bool result;
-	AllocConsole();
-	freopen("CONOUT$", "wt", stdout);
+	//AllocConsole();
+	//freopen("CONOUT$", "wt", stdout);
 
 	//printf_s("This is Console Test! \n");
 	

@@ -84,12 +84,10 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 	//m_bulletSystem.push_back( new BiDirectionalSystem());
 	//m_bulletSystem.push_back(new BentSystem());
-
-	auto bulletSystem = new AimingNWAYSystem();
-	m_bulletSystem.push_back(bulletSystem);
-	
-
-
+	//m_bulletSystem.push_back(new AimingNWAYSystem);
+	//m_bulletSystem.push_back(new RandomNWAYSystem);
+	//m_bulletSystem.push_back(new NWAYSystem);
+	//m_bulletSystem.push_back(new PatternNWAYSystem);
 	start = chrono::high_resolution_clock::now();
 
 	return true;
@@ -183,7 +181,7 @@ bool GraphicsClass::Render()
 			m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
 			Point bulletPosition = bullet->GetPosition();
-			XMMATRIX bulletPositionMatrix = XMMatrixTranslation(bulletPosition.x, bulletPosition.y, bulletPosition.z);
+			XMMATRIX bulletPositionMatrix = XMMatrixTranslation(bulletPosition.x, bulletPosition.z, bulletPosition.y);
 			
 			worldMatrix = bulletPositionMatrix* startPositionMatrix * worldMatrix;
 			// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.

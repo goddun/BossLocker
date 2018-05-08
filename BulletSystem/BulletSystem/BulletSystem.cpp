@@ -88,17 +88,13 @@ void NWAYSystem::Update(float elapsedTime)
 }
 
 
-void AimingNWAYSystem::SetTarget(float x, float y)
-{
-	m_angle = atan2f(y-m_startPosition.y, x-m_startPosition.x) / 3.1415 / 2;
-	cout << m_angle << endl;
-}
 
 void AimingNWAYSystem::Update(float elapsedTime)
 {
 	m_firerate += elapsedTime;
+	m_totalTime += elapsedTime;
 
-	if (m_firerate > 0.5)
+	if (m_firerate > 0.5&&m_totalTime<2)
 	{
 		for (int i = 0; i < multiShotCount; ++i)
 		{
@@ -108,9 +104,67 @@ void AimingNWAYSystem::Update(float elapsedTime)
 
 		m_firerate = 0;
 	}
+	else if(m_totalTime<4)
+	{
+
+	}
+	else
+	{
+		m_totalTime = 0;
+	}
+
 
 	for (auto& bullet : bullets)
 	{
 		bullet->Update(elapsedTime);
 	}
+}
+
+void RandomNWAYSystem::Update(float elapsedTime)
+{
+	m_firerate += elapsedTime;
+
+	if (m_firerate > 0.5)
+	{
+		Bullet* bullet = new Bullet(m_speed, m_angle + m_angleRange * ((rand()/(float)RAND_MAX) - 0.5f));
+		bullets.push_back(bullet);
+
+
+		m_firerate = 0;
+	}
+
+
+	for (auto& bullet : bullets)
+	{
+		bullet->Update(elapsedTime);
+	}
+}
+
+void PatternNWAYSystem::Update(float elapsedTime)
+{
+	m_firerate += elapsedTime;
+	m_totalTime += elapsedTime;
+	static int index = 0;
+	if (m_firerate > 0.5)
+	{
+		char *p = pattern + index*width;
+		for (int i = width - 1; i >= 0; i--, p++)
+		{
+			if (*p != ' ')
+			{
+				Bullet* bullet = new Bullet(m_speed, m_angle+m_angleRange* ((float)i/(width-1)-0.5f) );
+				bullets.push_back(bullet);
+			}
+		}
+		
+		m_firerate = 0;
+		index += 1;
+	}
+
+	for (auto& bullet : bullets)
+	{
+		bullet->Update(elapsedTime);
+	}
+
+	index = int(index) % height;
 }

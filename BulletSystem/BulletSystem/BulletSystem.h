@@ -1,7 +1,19 @@
 #pragma once
 #include"Bullet.h"
 #include<vector>
+#include<random>
 using namespace std;
+
+static char pattern[] =
+"                        "
+"                        "
+"########   #   #########"
+"#      #   #   #        "
+"#      #   #   #        "
+"########   #   #   #####"
+"#      #   #   #       #"
+"#      #   #   #       #"
+"########   #   #########";
 
 class BulletSystem
 {
@@ -19,6 +31,13 @@ protected:
 	Point m_startPosition = { 0,0,0 };
 public:
 	vector<Bullet*> bullets;
+};
+
+class AmingSystem : public BulletSystem
+{
+	virtual void SetTarget(float x, float y) { m_angle = atan2f(y -m_startPosition.y, x - m_startPosition.x) / 3.1415 / 2; };
+protected:
+	float m_angle = { 0 };
 };
 
 class BiDirectionalSystem : public BulletSystem
@@ -59,22 +78,58 @@ public:
 	float m_speedAcceleration = 1.f;
 	float m_firerate = 0;
 	float m_speed = 3;
-	float m_angleRange=0.25;
-	int multiShotCount = 7;
+	float m_angleRange=1;
+	int multiShotCount = 10;
 };
 
-class AimingNWAYSystem :public BulletSystem
+class AimingNWAYSystem :public AmingSystem
 {
 public:
-	void SetTarget(float x, float y);
 	void Update(float elapsedTime);
 public:
-	float m_angle = { 0 };
 	float m_shotAnglerate = { -0.02f };
 	float m_angleAcceleration = -0.03f;
 	float m_speedAcceleration = 1.f;
 	float m_firerate = 0;
 	float m_speed = 3;
 	float m_angleRange = 0.25;
+	float m_totalTime = 0;
 	int multiShotCount = 7;
+};
+
+class RandomNWAYSystem :public AmingSystem
+{
+public:
+	void Update(float elapsedTime);
+public:
+	float m_shotAnglerate = { -0.02f };
+	float m_angleAcceleration = -0.03f;
+	float m_speedAcceleration = 1.f;
+	float m_firerate = 0;
+	float m_speed = 3;
+	float m_angleRange = 0.25;
+	float m_coolTime = 0;
+	float m_totalTime = 0;
+	int multiShotCount = 5;
+
+};
+
+
+
+class PatternNWAYSystem :public AmingSystem
+{
+public:
+	void Update(float elapsedTime);
+public:
+	float m_shotAnglerate = { -0.02f };
+	float m_angleAcceleration = -0.03f;
+	float m_speedAcceleration = 1.f;
+	float m_firerate = 0;
+	float m_speed = 3;
+	float m_angleRange = 0.25;
+	int multiShotCount = 5;
+
+	int width = 24;
+	int height = 9;
+	float m_totalTime = 0;
 };
